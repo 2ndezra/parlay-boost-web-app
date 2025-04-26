@@ -1,3 +1,4 @@
+from ParlayBoost_RetryPatch_PlayerLog import fetch_player_log_with_retry
 
 # --- Full Parlay Boost 2.0 App ---
 # (Everything you asked for)
@@ -46,15 +47,7 @@ if player_id:
     all_logs = pd.DataFrame()
     try:
         for season in season_years:
-            log = safe_nba_pull(lambda: playergamelog.PlayerGameLog(
-                player_id=player_id,
-                season=season,
-                season_type_all_star='Regular Season'
-            ))
-            df = log.get_data_frames()[0]
-            if not df.empty:
-                all_logs = pd.concat([all_logs, df], ignore_index=True)
-
+                all_logs = fetch_player_log_with_retry(player_id)
         all_logs['GAME_DATE'] = pd.to_datetime(all_logs['GAME_DATE'])
         all_logs = all_logs.sort_values('GAME_DATE', ascending=False)
         all_logs = all_logs.head(100)
