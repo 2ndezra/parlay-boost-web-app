@@ -48,6 +48,9 @@ if player_id:
     try:
         for season in season_years:
                 all_logs = fetch_player_log_with_retry(player_id)
+            if all_logs.empty:
+    st.warning(f"No data found for {selected_player}. Try another player.")
+    st.stop()
         all_logs['GAME_DATE'] = pd.to_datetime(all_logs['GAME_DATE'])
         all_logs = all_logs.sort_values('GAME_DATE', ascending=False)
         all_logs = all_logs.head(100)
